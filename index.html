@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cocktail Menu</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #f5f5f0;
+            font-family: 'Noto Serif', serif;
+            color: #2c2c2c;
+            padding: 40px 20px;
+            background-image: 
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 3px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 3px);
+        }
+        
+        .menu-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fefefe;
+            padding: 60px 50px;
+            box-shadow: 
+                0 0 0 1px #d4d4d4,
+                5px 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            animation: containerFadeIn 0.8s ease-out;
+        }
+        
+        @keyframes containerFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* 纸张边缘素描效果 */
+        .menu-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid #2c2c2c;
+            margin: 20px;
+            pointer-events: none;
+            opacity: 0;
+            animation: drawBorder 1.5s ease-out 0.2s forwards;
+        }
+        
+        @keyframes drawBorder {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* 角落装饰 - 素描风格 */
+        .corner-deco {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            z-index: 2;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+        
+        .corner-deco.top-left {
+            top: 15px;
+            left: 15px;
+            border-top: 2px solid #666;
+            border-left: 2px solid #666;
+            animation-delay: 0.3s;
+        }
+        
+        .corner-deco.top-right {
+            top: 15px;
+            right: 15px;
+            border-top: 2px solid #666;
+            border-right: 2px solid #666;
+            animation-delay: 0.5s;
+        }
+        
+        .corner-deco.bottom-left {
+            bottom: 15px;
+            left: 15px;
+            border-bottom: 2px solid #666;
+            border-left: 2px solid #666;
+            animation-delay: 0.7s;
+        }
+        
+        .corner-deco.bottom-right {
+            bottom: 15px;
+            right: 15px;
+            border-bottom: 2px solid #666;
+            border-right: 2px solid #666;
+            animation-delay: 0.9s;
+        }
+        
+        .menu-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .menu-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+            font-family: 'Playfair Display', serif;
+            color: #2c2c2c;
+        }
+        
+        .menu-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #2c2c2c;
+            animation: expandLine 1.5s ease-out 0.5s forwards;
+        }
+        
+        @keyframes expandLine {
+            to {
+                width: 120px;
+            }
+        }
+        
+        .menu-subtitle {
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: #666;
+            margin-top: 25px;
+            font-style: italic;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* 简约图标行 */
+        .icon-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 25px;
+            font-size: 16px;
+            color: #999;
+        }
+        
+        .icon-row span {
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .icon-row span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .icon-row span:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+        
+        .icon-row span:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+        
+        .cocktail-list {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 35px 40px;
+        }
+        
+        .cocktail-item {
+            padding: 20px;
+            position: relative;
+            border: 1px solid #ddd;
+            background: #fefefe;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+            transition: all 0.3s ease;
+        }
+        
+        .cocktail-item:nth-child(1) { animation-delay: 0.2s; }
+        .cocktail-item:nth-child(2) { animation-delay: 0.25s; }
+        .cocktail-item:nth-child(3) { animation-delay: 0.3s; }
+        .cocktail-item:nth-child(4) { animation-delay: 0.35s; }
+        .cocktail-item:nth-child(5) { animation-delay: 0.4s; }
+        .cocktail-item:nth-child(6) { animation-delay: 0.45s; }
+        .cocktail-item:nth-child(7) { animation-delay: 0.5s; }
+        .cocktail-item:nth-child(8) { animation-delay: 0.55s; }
+        .cocktail-item:nth-child(9) { animation-delay: 0.6s; }
+        .cocktail-item:nth-child(10) { animation-delay: 0.65s; }
+        .cocktail-item:nth-child(12) { animation-delay: 0.7s; }
+        .cocktail-item:nth-child(13) { animation-delay: 0.75s; }
+        .cocktail-item:nth-child(14) { animation-delay: 0.8s; }
+        .cocktail-item:nth-child(15) { animation-delay: 0.85s; }
+        .cocktail-item:nth-child(17) { animation-delay: 0.9s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .cocktail-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-color: #999;
+        }
+        
+        /* 手绘装饰元素 */
+        .cocktail-item::before {
+            content: '◆';
+            position: absolute;
+            left: -8px;
+            top: -8px;
+            font-size: 14px;
+            color: #999;
+            background: #fefefe;
+            padding: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .cocktail-item:hover::before {
+            color: #2c2c2c;
+            transform: rotate(45deg);
+        }
+        
+        .cocktail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .cocktail-item:hover .cocktail-header {
+            border-bottom-color: #999;
+        }
+        
+        .cocktail-name {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            position: relative;
+            color: #2c2c2c;
+            transition: letter-spacing 0.3s ease;
+        }
+        
+        .cocktail-item:hover .cocktail-name {
+            letter-spacing: 2px;
+        }
+        
+        .cocktail-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #8b7355;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        
+        .cocktail-item:hover .cocktail-price {
+            color: #6b5335;
+            transform: scale(1.05);
+        }
+        
+        .cocktail-type {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+            font-style: italic;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+        
+        .cocktail-item:hover .cocktail-type {
+            color: #666;
+        }
+        
+        .cocktail-flavor {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #555;
+            padding-left: 12px;
+            border-left: 2px solid #e0e0e0;
+            font-weight: 300;
+            transition: all 0.3s ease;
+        }
+        
+        .cocktail-item:hover .cocktail-flavor {
+            padding-left: 18px;
+            border-left-color: #999;
+            color: #2c2c2c;
+        }
+        
+        /* 装饰性分隔线 */
+        .divider {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1.2s forwards;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ccc 20%, #ccc 80%, transparent);
+        }
+        
+        .divider-icon {
+            position: relative;
+            background: #fefefe;
+            padding: 0 20px;
+            font-size: 18px;
+            color: #999;
+            display: inline-block;
+            animation: rotate 4s ease-in-out infinite;
+        }
+        
+        @keyframes rotate {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(90deg);
+            }
+            50% {
+                transform: rotate(180deg);
+            }
+            75% {
+                transform: rotate(270deg);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 968px) {
+            .cocktail-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .menu-container {
+                padding: 40px 30px;
+            }
+            
+            .menu-title {
+                font-size: 36px;
+                letter-spacing: 4px;
+            }
+            
+            .cocktail-name {
+                font-size: 20px;
+            }
+            
+            .cocktail-price {
+                font-size: 18px;
+            }
+        }
+        
+        /* 添加纸张纹理 */
+        .menu-container {
+            background-image: 
+                radial-gradient(circle at 20% 50%, transparent 0%, rgba(0,0,0,0.01) 100%),
+                radial-gradient(circle at 80% 80%, transparent 0%, rgba(0,0,0,0.01) 100%);
+        }
+        
+        /* Secret Menu Item */
+        .secret-menu-item {
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+        
+        .secret-menu-item:hover {
+            background: transparent;
+            border-color: transparent;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .secret-menu-item::before {
+            display: none;
+        }
+        
+        .secret-teaser {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 32px;
+        }
+        
+        .rotating-diamond {
+            display: inline-block;
+            color: #8b7355;
+            font-size: 42px;
+            animation: rotate 4s ease-in-out infinite;
+        }
+        
+        .and-text {
+            color: #999;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .secret-menu-item:hover .rotating-diamond {
+            color: #2c2c2c;
+        }
+        
+        .secret-menu-item:hover .and-text {
+            color: #2c2c2c;
+            letter-spacing: 4px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #fefefe 0%, #faf8f5 100%);
+            margin: 5% auto;
+            padding: 40px 50px;
+            border: 3px double #2c2c2c;
+            width: 90%;
+            max-width: 700px;
+            position: relative;
+            animation: slideDown 0.5s ease-out;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px dashed rgba(139, 115, 85, 0.3);
+            pointer-events: none;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .close {
+            color: #999;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: #2c2c2c;
+        }
+        
+        .secret-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .secret-image {
+            flex-shrink: 0;
+            width: 180px;
+            height: auto;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+            background: #fff;
+            padding: 10px;
+        }
+        
+        .secret-info {
+            flex: 1;
+        }
+        
+        .secret-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2c2c2c;
+            letter-spacing: 2px;
+            line-height: 1.2;
+        }
+        
+        .secret-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #8b7355;
+            margin-bottom: 10px;
+        }
+        
+        .secret-type {
+            font-size: 14px;
+            color: #999;
+            font-style: italic;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        
+        .secret-ingredients {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(139, 115, 85, 0.05) 0%, rgba(0,0,0,0.02) 100%);
+            border: 2px dashed rgba(139, 115, 85, 0.3);
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .ingredient {
+            font-size: 16px;
+            color: #2c2c2c;
+            padding: 8px 18px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(139, 115, 85, 0.15) 100%);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .ingredient:hover {
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 10px rgba(139, 115, 85, 0.2);
+        }
+        
+        .secret-flavor {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #2c2c2c;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            background: rgba(139, 115, 85, 0.08);
+            border-left: 3px solid #8b7355;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .secret-description {
+            font-size: 15px;
+            line-height: 2;
+            color: #555;
+            padding: 25px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(245,245,240,0.9));
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-family: 'Noto Serif', serif;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+            position: relative;
+        }
+        
+        .secret-description::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-size: 60px;
+            color: rgba(139, 115, 85, 0.2);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 30px 25px;
+                margin: 10% auto;
+            }
+            
+            .secret-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .secret-image {
+                width: 150px;
+            }
+            
+            .secret-info {
+                text-align: center;
+            }
+            
+            .secret-title {
+                font-size: 28px;
+            }
+            
+            .secret-ingredients {
+                gap: 10px;
+                justify-content: center;
+            }
+            
+            .ingredient {
+                font-size: 14px;
+                padding: 4px 12px;
+            }
+            
+            .secret-button {
+                font-size: 16px;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+    
+    <script>
+        function showSecret() {
+            document.getElementById('secretModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeSecret() {
+            document.getElementById('secretModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('secretModal');
+            if (event.target == modal) {
+                closeSecret();
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSecret();
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="menu-container">
+        <!-- Corner decorations -->
+        <div class="corner-deco top-left"></div>
+        <div class="corner-deco top-right"></div>
+        <div class="corner-deco bottom-left"></div>
+        <div class="corner-deco bottom-right"></div>
+        
+        <div class="menu-header">
+            <h1 class="menu-title">Cocktail Menu</h1>
+            <p class="menu-subtitle">Handcrafted Beverages</p>
+            <div class="icon-row">
+                <span>✦</span>
+                <span>◆</span>
+                <span>✦</span>
+            </div>
+        </div>
+        
+        <div class="cocktail-list">
+            <!-- Short Drinks -->
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Last Word</h2>
+                    <span class="cocktail-price">$25</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~30%</div>
+                <div class="cocktail-flavor">
+                    Complex herbal botanicals / Maraschino cherry sweetness / Lime acidity / Chartreuse bitter notes / Balanced intensity
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Aviation</h2>
+                    <span class="cocktail-price">$1</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~28%</div>
+                <div class="cocktail-flavor">
+                    Delicate violet floral notes / Maraschino cherry sweetness / Bright lemon citrus / Sky-blue elegance / Smooth gin backbone
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Difford's Daiquiri</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~25%</div>
+                <div class="cocktail-flavor">
+                    Light rum sweetness / Fresh lime brightness / Simple balance / Clean crisp finish / Classic elegance
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Pineapple Daiquiri</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~23%</div>
+                <div class="cocktail-flavor">
+                    Tropical pineapple sweetness / White rum smoothness / Lime citrus balance / Rich syrup body / Island paradise
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Comte de Sureau</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~25%</div>
+                <div class="cocktail-flavor">
+                    Elderflower floral elegance / Gin botanical essence / Bitter-sweet interplay / Refined complexity / Aromatic depth
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Fitzgerald</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~25%</div>
+                <div class="cocktail-flavor">
+                    Bright lemon zest / Gin clarity / Subtle salinity / Aromatic bitters accent / Refreshing sharpness
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Monte Carlo</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~35%</div>
+                <div class="cocktail-flavor">
+                    Rye spice / Herbal honey sweetness / Oak barrel depth / Aromatic bitters complexity / Rich warmth
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Moonlight</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~25%</div>
+                <div class="cocktail-flavor">
+                    Violet floral perfume / Citrus brightness / Lime & lemon tang / Dreamy purple hue / Ethereal elegance
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Moonside</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~25%</div>
+                <div class="cocktail-flavor">
+                    Soft violet essence / Sweet citrus notes / Lemon acidity / Balanced sweetness / Gentle finish
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Pink Negroni</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~25%</div>
+                <div class="cocktail-flavor">
+                    Bitter-sweet harmony / Botanical herbs / Bianco vermouth softness / Pink blush / Italian sophistication
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Hedge Maze</h2>
+                    <span class="cocktail-price">$15</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~30%</div>
+                <div class="cocktail-flavor">
+                    Old Tom gin sweetness / Complex herbaceous layers / Bianco vermouth smoothness / Green Chartreuse medicinal herbs
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Desire</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~28%</div>
+                <div class="cocktail-flavor">
+                    Rich cognac warmth / Elderflower floral elegance / Fresh lemon brightness / Agave smooth sweetness / Sophisticated balance
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Aggravation</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~16%</div>
+                <div class="cocktail-flavor">
+                    Scotch whisky depth / Rich espresso coffee / Silky cream smoothness / Decadent sweetness / After-dinner indulgence
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Gin Garden</h2>
+                    <span class="cocktail-price">$10</span>
+                </div>
+                <div class="cocktail-type">Short Drink · ~25%</div>
+                <div class="cocktail-flavor">
+                    Fresh cucumber coolness / Elderflower floral notes / Crisp apple sweetness / Gin botanical complexity / Garden-fresh lightness
+                </div>
+            </div>
+            
+            <div class="divider">
+                <span class="divider-icon">✦</span>
+            </div>
+            
+            <!-- Long Drinks -->
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Garibaldi</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Long Drink · ~10%</div>
+                <div class="cocktail-flavor">
+                    Fresh orange juice / Italian bitter balance / Light sweetness / Refreshing character / Mediterranean vibe
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Batanga</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Long Drink · ~12%</div>
+                <div class="cocktail-flavor">
+                    Tequila spirit / Cola sweetness / Lime freshness / Salted rim / Mexican heritage
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Hard Lemonade</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Long Drink · ~10%</div>
+                <div class="cocktail-flavor">
+                    Lemon refreshment / Sparkling effervescence / Light sweetness / Easy drinking / Summer coolness
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Screwdriver</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Long Drink · ~12%</div>
+                <div class="cocktail-flavor">
+                    Orange juice sweetness / Smooth vodka / Orange bitters accent / Classic simplicity / Crowd-pleaser
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Heavy Hawaiian Iced Tea</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Long Drink · ~16%</div>
+                <div class="cocktail-flavor">
+                    Tropical pineapple paradise / Four spirits blend / Citrus brightness / Orange liqueur sweetness / Island power punch
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Major Bailey</h2>
+                    <span class="cocktail-price">S.P.</span>
+                </div>
+                <div class="cocktail-type">Long Drink · ~13%</div>
+                <div class="cocktail-flavor">
+                    White rum smoothness / Pineapple tropical sweetness / Cointreau orange notes / Fresh lemon acidity / Caribbean refreshment
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Aviation Highball</h2>
+                    <span class="cocktail-price">$10</span>
+                </div>
+                <div class="cocktail-type">Long Drink · ~15%</div>
+                <div class="cocktail-flavor">
+                    Delicate violet floral notes / Maraschino cherry sweetness / Bright lemon citrus / Sky-blue elegance / Refreshing effervescence
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Deconstructed Apple Whisky</h2>
+                    <span class="cocktail-price">$10</span>
+                </div>
+                <div class="cocktail-type">Long Drink · ~18% · Limited to 1 glass</div>
+                <div class="cocktail-flavor">
+                    Crisp apple orchard freshness / Whisky warmth / Creamy milk smoothness / Deconstructed layers / Unique experience
+                </div>
+            </div>
+            
+            <div class="divider">
+                <span class="divider-icon">✦</span>
+            </div>
+            
+            <!-- Shot -->
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Kamikaze</h2>
+                    <span class="cocktail-price">$5 (4 shots)</span>
+                </div>
+                <div class="cocktail-type">Shot · ~35%</div>
+                <div class="cocktail-flavor">
+                    Citrus punch / Sharp lime acidity / Strong spirit / Direct impact / One shot wonder
+                </div>
+            </div>
+            
+            <div class="divider">
+                <span class="divider-icon">✦</span>
+            </div>
+            
+            <!-- Straight Spirits -->
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Hibiki</h2>
+                    <span class="cocktail-price">$20</span>
+                </div>
+                <div class="cocktail-type">Straight · 43% · 45ml</div>
+                <div class="cocktail-flavor">
+                    Japanese harmony / Delicate floral notes / Mizunara oak spice / Honeyed sweetness / Refined elegance
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Macallan 12</h2>
+                    <span class="cocktail-price">$10</span>
+                </div>
+                <div class="cocktail-type">Straight · 40% · 45ml</div>
+                <div class="cocktail-flavor">
+                    Rich sherry oak complexity / Dried fruits sweetness / Vanilla spice notes / Smooth highland character / Classic excellence
+                </div>
+            </div>
+            
+            <div class="cocktail-item">
+                <div class="cocktail-header">
+                    <h2 class="cocktail-name">Monkey 47</h2>
+                    <span class="cocktail-price">$20</span>
+                </div>
+                <div class="cocktail-type">Straight · 47% · 45ml</div>
+                <div class="cocktail-flavor">
+                    Black Forest botanicals / 47 handpicked ingredients / Cranberry forest notes / Complex herbal layers / German craftsmanship
+                </div>
+            </div>
+            
+            <!-- Secret Button as Menu Item -->
+            <div class="cocktail-item secret-menu-item" onclick="showSecret()">
+                <div class="secret-teaser">
+                    <span class="rotating-diamond">✦</span>
+                    <span class="and-text">and...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Secret Modal -->
+        <div id="secretModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeSecret()">&times;</span>
+                <div class="secret-header">
+                    <img src="denki-bran.png" alt="Denki Bran" class="secret-image">
+                    <div class="secret-info">
+                        <h2 class="secret-title">Fake Denki Bran</h2>
+                        <div class="secret-price">$30</div>
+                        <div class="secret-type">长饮 · ~？？%</div>
+                    </div>
+                </div>
+                <div class="secret-flavor">
+                    烟花爆炸的味道。
+                </div>
+                <div class="secret-description">
+                    "伪电气白兰是幻之名酒哦……它的做法曾经很长一段时间成为机密。<br><br>
+                    但是有天京都中央电话局的小职员怎么都想重现那个味道却不得法，几经尝试而奇迹般地发明出了【伪电气白兰】。<br><br>
+                    味道与香味都和原版天差地别，但因为其神秘口味其实如今还在某处被偷偷制作着带来酒吧街。"
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
